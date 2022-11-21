@@ -115,7 +115,7 @@ module.exports = {
             }
 
             //get the current prefix from the botconfig/config.json
-            let prefix = config.prefix
+            let prefix = 'sm.'
             //the prefix can be a Mention of the Bot / The defined Prefix of the Bot
             const prefixRegex = new RegExp(`^(<@!?${client.user.id}>|${escapeRegex(prefix)})\\s*`);
             //if its not that then return
