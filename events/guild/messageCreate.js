@@ -33,6 +33,7 @@ module.exports = {
      */
     async execute(message) {
         try {
+            const {client} = message
             //if the message is not in a guild (aka in dms), return aka ignore the inputs
             //if (!message.guild) return;
             // if the message  author is a bot, return aka ignore the inputs
