@@ -3,6 +3,7 @@ const { Message } = require('discord.js')
 let quizdrop = require('../../message-commands/Extra/quizdrop')
 let shimdrop = require('../../message-commands/Economy/shimdrop')
 let shimdrop2 = require('../../extras/shimdrop')
+const { escapeRegex } = require("../../handlers/functions"); 
 
 const sql = require('mssql')
 const sqlConfig = {
