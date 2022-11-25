@@ -1,12 +1,13 @@
-const { MessageEmbed, Client, Message, GuildMember, Collection, GuildChannel } = require("discord.js");
+const { EmbedBuilder, Client, Message, GuildMember, Collection, GuildChannel } = require("discord.js");
 const ee = require("../../botconfig/embed.json");
 
+require('dotenv').config()
 const sql = require('mssql')
 const sqlConfig = {
-    user: 'sa',
-    password: 'defaultpassword123',
-    database: 'TheShackPH',
-    server: 'localhost',
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_DATABASE,
+    server: process.env.DATABASE_SERVER,
     pool: {
         max: 10,
         min: 0,
@@ -101,11 +102,13 @@ module.exports = {
                         return sql.query`SELECT * FROM Shimdrop WHERE guildID = ${message.guild.id}`
                     }).then(async result => {
                         if (result.recordset.length == 0) {
-                            return message.channel.send(new MessageEmbed()
-                                .setColor(ee.color)
-                                .setFooter(ee.footertext, message.guild.iconURL())
-                                .setTitle(`Shimdrop Active Channels`)
-                                .setDescription(`None.`)
+                            return message.channel.send({
+                                embeds: [new EmbedBuilder()
+                                    .setColor(ee.color)
+                                    .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })
+                                    .setTitle(`Shimdrop Active Channels`)
+                                    .setDescription(`None.`)]
+                            }
                             )
                         } else {
                             showChannel(result.recordset, '', 1, 4, message, client)
@@ -121,7 +124,7 @@ module.exports = {
                                 //
                             })
 
-                            return message.channel.send(new MessageEmbed()
+                            return message.channel.send(new EmbedBuilder()
                                 .setColor(ee.color)
                                 .setFooter(ee.footertext, message.guild.iconURL())
                                 .setTitle(`<a:uuYllwShk_Shimmer:727028870569525320> Shimmer Drop | Active Channel`)
@@ -136,48 +139,58 @@ module.exports = {
                 }
                 else {
                     if (!['enable', 'disable', 'edit'].includes(args[0].toLowerCase()))
-                        return message.channel.send(new MessageEmbed()
-                            .setColor(ee.wrongcolor)
-                            .setFooter(ee.footertext, message.guild.iconURL())
-                            .setTitle(`❌ ERROR | Empty Args`)
-                            .setDescription(`shimdrop < enable | disable | edit > <Channel>`)
+                        return message.channel.send({
+                            embeds: [new EmbedBuilder()
+                                .setColor(ee.wrongcolor)
+                                .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })
+                                .setTitle(`❌ ERROR | Empty Args`)
+                                .setDescription(`shimdrop < enable | disable | edit > <Channel>`)]
+                        }
                         )
 
                     let channel = message.guild.channels.cache.get(args[1]) || message.mentions.channels.first()
                     if (!channel)
-                        return message.channel.send(new MessageEmbed()
-                            .setColor(ee.wrongcolor)
-                            .setFooter(ee.footertext, message.guild.iconURL())
-                            .setTitle(`❌ ERROR | Empty Args`)
-                            .setDescription(`shimdrop <enable | disable> <Channel>`)
+                        return message.channel.send({
+                            embeds: [new EmbedBuilder()
+                                .setColor(ee.wrongcolor)
+                                .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })
+                                .setTitle(`❌ ERROR | Empty Args`)
+                                .setDescription(`shimdrop <enable | disable> <Channel>`)]
+                        }
                         )
 
                     let content = args.join(' ')
                     let cooldownMin = (content.includes('cdMin%')) ? content.split('cdMin%')[1].substring(text.split('cdMin%')[1].indexOf('"') + 1, text.split('cdMin%')[1].indexOf('"', 2)) : 20
-                    if (isNaN(parseInt(cooldownMin))) return message.channel.send(new MessageEmbed()
-                        .setColor(ee.color)
-                        .setTitle('❌ ERROR | An error occurred')
-                        .setDescription('Minimum Cooldown(cdMin%) is not a number\nDon\'t forget the double quotes')
-                        .setFooter(ee.footertext, ee.footericon)
+                    if (isNaN(parseInt(cooldownMin))) return message.channel.send({
+                        embeds: [new EmbedBuilder()
+                            .setColor(ee.color)
+                            .setTitle('❌ ERROR | An error occurred')
+                            .setDescription('Minimum Cooldown(cdMin%) is not a number\nDon\'t forget the double quotes')
+                            .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })]
+                    }
                     )
                     cooldownMin = parseInt(cooldownMin)
                     let cooldownMax = (content.includes('cdMax%')) ? content.split('cdMax%')[1].substring(text.split('cdMax%')[1].indexOf('"') + 1, text.split('cdMax%')[1].indexOf('"', 2)) : 30
-                    if (isNaN(parseInt(cooldownMax))) return message.channel.send(new MessageEmbed()
-                        .setColor(ee.color)
-                        .setTitle('❌ ERROR | An error occurred')
-                        .setDescription('Maximum Cooldown(cdMax%) is not a number\nDon\'t forget the double quotes')
-                        .setFooter(ee.footertext, ee.footericon)
+                    if (isNaN(parseInt(cooldownMax))) return message.channel.send({
+                        embeds: [new EmbedBuilder()
+                            .setColor(ee.color)
+                            .setTitle('❌ ERROR | An error occurred')
+                            .setDescription('Maximum Cooldown(cdMax%) is not a number\nDon\'t forget the double quotes')
+                            .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })]
+                    }
                     )
                     cooldownMax = parseInt(cooldownMax)
                     cooldownMin = cooldownMin
                     cooldownMax = cooldownMax
 
                     let reward = (content.includes('reward%')) ? content.split('reward%')[1].substring(text.split('reward%')[1].indexOf('"') + 1, text.split('reward%')[1].indexOf('"', 2)) : 500
-                    if (isNaN(parseInt(reward))) return message.channel.send(new MessageEmbed()
-                        .setColor(ee.color)
-                        .setTitle('❌ ERROR | An error occurred')
-                        .setDescription('Reward is not a number\nDon\'t forget the double quotes')
-                        .setFooter(ee.footertext, ee.footericon)
+                    if (isNaN(parseInt(reward))) return message.channel.send({
+                        embeds: [new EmbedBuilder()
+                            .setColor(ee.color)
+                            .setTitle('❌ ERROR | An error occurred')
+                            .setDescription('Reward is not a number\nDon\'t forget the double quotes')
+                            .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })]
+                    }
                     )
                     reward = parseInt(reward)
 
@@ -185,40 +198,48 @@ module.exports = {
                         return sql.query`SELECT * FROM Shimdrop WHERE channelID = ${channel.id}`
                     }).then(async result => {
                         if (args[0] == 'enable' && result.recordset[0] !== undefined) {
-                            return message.channel.send(new MessageEmbed()
-                                .setTitle('<a:Shimmers:729388357410619505> Shimdrop <a:Shimmers:729388357410619505>')
-                                .setDescription(`${channel} is already **enabled**.`)
-                                .setColor(ee.color)
-                                .setFooter(ee.footertext, ee.footericon)
+                            return message.channel.send({
+                                embeds: [new EmbedBuilder()
+                                    .setTitle('<a:Shimmers:729388357410619505> Shimdrop <a:Shimmers:729388357410619505>')
+                                    .setDescription(`${channel} is already **enabled**.`)
+                                    .setColor(ee.color)
+                                    .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })]
+                            }
                             )
                         }
                         if (args[0] == 'enable' && result.recordset[0] === undefined) {
                             sql.query`INSERT INTO Shimdrop(channelID, guildID, reward, cooldownMin, cooldownMax) 
                         VALUES(${channel.id}, ${message.guild.id}, ${reward}, ${cooldownMin}, ${cooldownMax})`
-                            return message.channel.send(new MessageEmbed()
-                                .setTitle('<a:Shimmers:729388357410619505> Shimdrop <a:Shimmers:729388357410619505>')
-                                .setDescription(`${channel} is now **enabled** shimdrop!.`)
-                                .setColor(ee.color)
-                                .setFooter(ee.footertext, ee.footericon)
+                            return message.channel.send({
+                                embeds: [new EmbedBuilder()
+                                    .setTitle('<a:Shimmers:729388357410619505> Shimdrop <a:Shimmers:729388357410619505>')
+                                    .setDescription(`${channel} is now **enabled** shimdrop!.`)
+                                    .setColor(ee.color)
+                                    .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })]
+                            }
                             )
                         }
                         if (args[0] == 'disable' && result.recordset[0] !== undefined) {
                             sql.query`DELETE FROM Shimdrop WHERE channelID = ${channel.id}`
                             if (activeChecker.has(channel.id))
                                 activeChecker.delete(channel.id)
-                            return message.channel.send(new MessageEmbed()
-                                .setTitle('<a:Shimmers:729388357410619505> Shimdrop <a:Shimmers:729388357410619505>')
-                                .setDescription(`${channel} is now **deleted** shimdrop!.`)
-                                .setColor(ee.color)
-                                .setFooter(ee.footertext, ee.footericon)
+                            return message.channel.send({
+                                embeds: [new EmbedBuilder()
+                                    .setTitle('<a:Shimmers:729388357410619505> Shimdrop <a:Shimmers:729388357410619505>')
+                                    .setDescription(`${channel} is now **deleted** shimdrop!.`)
+                                    .setColor(ee.color)
+                                    .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })]
+                            }
                             )
                         }
                         if (args[0] == 'disable' && result.recordset[0] === undefined) {
-                            return message.channel.send(new MessageEmbed()
-                                .setTitle('<a:Shimmers:729388357410619505> Shimdrop <a:Shimmers:729388357410619505>')
-                                .setDescription(`${channel} is already **disabled**.`)
-                                .setColor(ee.color)
-                                .setFooter(ee.footertext, ee.footericon)
+                            return message.channel.send({
+                                embeds: [new EmbedBuilder()
+                                    .setTitle('<a:Shimmers:729388357410619505> Shimdrop <a:Shimmers:729388357410619505>')
+                                    .setDescription(`${channel} is already **disabled**.`)
+                                    .setColor(ee.color)
+                                    .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })]
+                            }
                             )
                         }
 
@@ -227,19 +248,23 @@ module.exports = {
                             let updatedCdMax = (content.includes('cdMax%')) ? parseInt(content.split('cdMax%')[1].substring(text.split('cdMax%')[1].indexOf('"') + 1, text.split('cdMax%')[1].indexOf('"', 2))) : result.recordset[0].cooldownMax
                             let updatedReward = (content.includes('reward%')) ? parseInt(content.split('reward%')[1].substring(text.split('reward%')[1].indexOf('"') + 1, text.split('reward%')[1].indexOf('"', 2))) : result.recordset[0].reward
                             sql.query`UPDATE Shimdrop SET cooldownMin = ${updatedCdMin}, cooldownMax = ${updatedCdMax}, reward = ${updatedReward} WHERE channelID = ${channel.id}`
-                            return message.channel.send(new MessageEmbed()
-                                .setTitle('<a:Shimmers:729388357410619505> Shimdrop <a:Shimmers:729388357410619505>')
-                                .setDescription(`${channel} successfully edited the configuration!.`)
-                                .setColor(ee.color)
-                                .setFooter(ee.footertext, ee.footericon)
+                            return message.channel.send({
+                                embeds: [new EmbedBuilder()
+                                    .setTitle('<a:Shimmers:729388357410619505> Shimdrop <a:Shimmers:729388357410619505>')
+                                    .setDescription(`${channel} successfully edited the configuration!.`)
+                                    .setColor(ee.color)
+                                    .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })]
+                            }
                             )
                         }
                         if (args[0] == 'edit' && result.recordset[0] === undefined) {
-                            return message.channel.send(new MessageEmbed()
-                                .setTitle('<a:Shimmers:729388357410619505> Shimdrop <a:Shimmers:729388357410619505>')
-                                .setDescription(`${channel} is currently **disabled**.`)
-                                .setColor(ee.color)
-                                .setFooter(ee.footertext, ee.footericon)
+                            return message.channel.send({
+                                embeds: [new EmbedBuilder()
+                                    .setTitle('<a:Shimmers:729388357410619505> Shimdrop <a:Shimmers:729388357410619505>')
+                                    .setDescription(`${channel} is currently **disabled**.`)
+                                    .setColor(ee.color)
+                                    .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })]
+                            }
                             )
                         }
 
@@ -249,9 +274,9 @@ module.exports = {
                 }
             } catch (e) {
                 console.log(String(e.stack).bgRed)
-                return message.channel.send(new MessageEmbed()
+                return message.channel.send(new EmbedBuilder()
                     .setColor(ee.wrongcolor)
-                    .setFooter(ee.footertext, message.guild.iconURL())
+                    .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })
                     .setTitle(`❌ ERROR | An error occurred`)
                     .setDescription(`\`\`\`${e.stack}\`\`\``)
                 );
@@ -317,7 +342,7 @@ async function showChannel(arr, description, page, max, message, client) {
                         })
 
                         msg.edit({
-                            embed: {
+                            embeds: [{
                                 color: (ee.color),
                                 footer: {
                                     text: ee.footertext,
@@ -325,7 +350,7 @@ async function showChannel(arr, description, page, max, message, client) {
                                 },
                                 title: `<a:uuYllwShk_Shimmer:727028870569525320> Shimmer Drop | Active Channel`,
                                 description: description
-                            }
+                            }]
                         }).then(async msg => {
                             loopUpdate(arr, description, page, max, msg, client, message.author.id)
                         })
@@ -343,7 +368,7 @@ async function showChannel(arr, description, page, max, message, client) {
                         })
 
                         msg.edit({
-                            embed: {
+                            embeds: [{
                                 color: (ee.color),
                                 footer: {
                                     text: ee.footertext,
@@ -351,7 +376,7 @@ async function showChannel(arr, description, page, max, message, client) {
                                 },
                                 title: `<a:uuYllwShk_Shimmer:727028870569525320> Shimmer Drop | Active Channel`,
                                 description: description
-                            }
+                            }]
                         }).then(async msg => {
                             loopUpdate(arr, description, page, max, msg, client, message.author.id)
                         })
@@ -403,7 +428,7 @@ async function loopUpdate(arr, description, page, max, msg, client, authorID) {
                 })
 
                 msg.edit({
-                    embed: {
+                    embeds: [{
                         color: (ee.color),
                         footer: {
                             text: ee.footertext,
@@ -411,7 +436,7 @@ async function loopUpdate(arr, description, page, max, msg, client, authorID) {
                         },
                         title: `<a:uuYllwShk_Shimmer:727028870569525320> Shimmer Drop | Active Channel`,
                         description: description
-                    }
+                    }]
                 }).then(async msg => {
                     loopUpdate(arr, description, page, max, msg, client, authorID)
                 })
@@ -429,7 +454,7 @@ async function loopUpdate(arr, description, page, max, msg, client, authorID) {
                 })
 
                 msg.edit({
-                    embed: {
+                    embeds: [{
                         color: (ee.color),
                         footer: {
                             text: ee.footertext,
@@ -437,7 +462,7 @@ async function loopUpdate(arr, description, page, max, msg, client, authorID) {
                         },
                         title: `<a:uuYllwShk_Shimmer:727028870569525320> Shimmer Drop | Active Channel`,
                         description: description
-                    }
+                    }]
                 }).then(async msg => {
                     loopUpdate(arr, description, page, max, msg, client, authorID)
                 })

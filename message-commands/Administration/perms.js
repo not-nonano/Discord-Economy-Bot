@@ -1,12 +1,13 @@
 const { MessageEmbed, Client, Message, GuildMember } = require("discord.js");
 const ee = require("../../botconfig/embed.json");
 
+require('dotenv').config()
 const sql = require('mssql')
 const sqlConfig = {
-    user: 'sa',
-    password: 'defaultpassword123',
-    database: 'TheShackPH',
-    server: 'localhost',
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_DATABASE,
+    server: process.env.DATABASE_SERVER,
     pool: {
         max: 10,
         min: 0,

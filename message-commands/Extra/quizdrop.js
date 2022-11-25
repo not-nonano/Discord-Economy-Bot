@@ -1,4 +1,4 @@
-const { MessageEmbed, Client, Message, GuildMember, MessageCollector, Collection } = require("discord.js")
+const { EmbedBuilder, Client, Message, GuildMember, MessageCollector, Collection } = require("discord.js")
 const { wrongcolor, footertext, color } = require("../../botconfig/embed.json");
 const ee = require("../../botconfig/embed.json");
 let ChannelCollection = new Collection()
@@ -28,7 +28,7 @@ module.exports = {
                 if (ChannelCollection.size !== 0) return message.channel.send(`quizdrop is currently running ♥`)
                 let content = args.join(' ')
                 if (!content)
-                    return message.channel.send(new MessageEmbed()
+                    return message.channel.send(new EmbedBuilder()
                         .setColor(wrongcolor)
                         .setFooter(footertext, message.guild.iconURL())
                         .setTitle(`❌ ERROR | An error occurred`)
@@ -36,7 +36,7 @@ module.exports = {
                     );
                 let collected = content.split('++')
                 if (!collected[0] || !collected[1] || !collected[2] || !collected[3])
-                    return message.channel.send(new MessageEmbed()
+                    return message.channel.send(new EmbedBuilder()
                         .setColor(wrongcolor)
                         .setFooter(footertext, message.guild.iconURL())
                         .setTitle(`❌ ERROR | An error occurred`)
@@ -104,7 +104,7 @@ module.exports = {
 
             } catch (e) {
                 console.log(String(e.stack).bgRed);
-                return message.channel.send(new MessageEmbed()
+                return message.channel.send(new EmbedBuilder()
                     .setColor(wrongcolor)
                     .setFooter(footertext, message.guild.iconURL())
                     .setTitle(`❌ ERROR | An error occurred`)

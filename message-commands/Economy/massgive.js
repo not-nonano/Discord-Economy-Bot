@@ -1,12 +1,13 @@
-const { MessageEmbed, Client, Message, GuildMember } = require("discord.js");
+const { EmbedBuilder, Client, Message, GuildMember } = require("discord.js");
 const ee = require("../../botconfig/embed.json");
 
+require('dotenv').config()
 const sql = require('mssql')
 const sqlConfig = {
-    user: 'sa',
-    password: 'defaultpassword123',
-    database: 'TheShackPH',
-    server: 'localhost',
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_DATABASE,
+    server: process.env.DATABASE_SERVER,
     pool: {
         max: 10,
         min: 0,
@@ -44,9 +45,9 @@ module.exports = {
                 let users = collected[0].split(" ")
                 let count = 0
 
-                if (!collected[1]) return message.channel.send({ embed: { color: ee.color, description: 'Please specify amount.' } })
+                if (!collected[1]) return message.channel.send({ embeds: [{ color: ee.color, description: 'Please specify amount.' }] })
                 let shims = parseInt(collected[1])
-                if (isNaN(shims)) return message.channel.send({ embed: { color: ee.color, description: 'I need whole number.' } })
+                if (isNaN(shims)) return message.channel.send({ embeds: [{ color: ee.color, description: 'I need whole number.' } ]})
 
                 users.forEach(async function (res, index) {
                     if (res == '') return
@@ -74,22 +75,26 @@ module.exports = {
                     else count = count + 1
                 })
 
-                return message.channel.send(new MessageEmbed()
-                    .setColor(ee.color)
-                    .setFooter(ee.footertext, message.guild.iconURL())
-                    .setTitle(`Shimmers! Shimmers! <a:Shimmers:729388357410619505>`)
-                    .setDescription(`Generated ${addCommas(collected[1])} <a:Shimmers:729388357410619505> for ${count} users`)
+                return message.channel.send({
+                    embeds: [new EmbedBuilder()
+                        .setColor(ee.color)
+                        .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })
+                        .setTitle(`Shimmers! Shimmers! <a:Shimmers:729388357410619505>`)
+                        .setDescription(`Generated ${addCommas(collected[1])} <a:Shimmers:729388357410619505> for ${count} users`)]
+                }
                 );
 
 
 
             } catch (e) {
                 console.log(String(e.stack).bgRed)
-                return message.channel.send(new MessageEmbed()
-                    .setColor(ee.wrongcolor)
-                    .setFooter(ee.footertext, message.guild.iconURL())
-                    .setTitle(`❌ ERROR | An error occurred`)
-                    .setDescription(`\`\`\`${e.stack}\`\`\``)
+                return message.channel.send({
+                    embeds:     [new EmbedBuilder()
+                        .setColor(ee.wrongcolor)
+                        .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })
+                        .setTitle(`❌ ERROR | An error occurred`)
+                        .setDescription(`\`\`\`${e.stack}\`\`\``)]
+                }
                 );
             }
         }

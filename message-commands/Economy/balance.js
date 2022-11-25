@@ -1,13 +1,14 @@
-const { MessageEmbed, Client, Message, GuildMember, MessageAttachment } = require("discord.js");
+const { EmbedBuilder, Client, Message, GuildMember, AttachmentBuilder } = require("discord.js");
 const ee = require("../../botconfig/embed.json");
 const Canvas = require('@napi-rs/canvas')
 
+require('dotenv').config()
 const sql = require('mssql')
 const sqlConfig = {
-    user: 'sa',
-    password: 'defaultpassword123',
-    database: 'TheShackPH',
-    server: 'localhost',
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_DATABASE,
+    server: process.env.DATABASE_SERVER,
     pool: {
         max: 10,
         min: 0,
@@ -59,10 +60,11 @@ module.exports = {
                         ctx.font = 'bold 70px Times New Roman';
                         ctx.fillText(profile.tag, 185, 850);
 
-                        const attachment = new MessageAttachment(canvas.toBuffer(), 'code.png');
-                        return message.channel.send(attachment)
+                        const attachment = new AttachmentBuilder(await canvas.encode('png'), { name: 'code.png' });
+                        return message.channel.send({ files: [attachment] })
                     }
                     else {
+                        console.log(false)
                         await sql.query`INSERT INTO Economy(userID, shims, daily) VALUES(${profile.id}, 0, 0)`
                         register(profile, message)
                     }
@@ -72,16 +74,25 @@ module.exports = {
 
             } catch (e) {
                 console.log(String(e.stack).bgRed)
-                return message.channel.send(new MessageEmbed()
-                    .setColor(ee.wrongcolor)
-                    .setFooter(ee.footertext, message.guild.iconURL())
-                    .setTitle(`❌ ERROR | An error occurred`)
-                    .setDescription(`\`\`\`${e.stack}\`\`\``)
+                return message.channel.send({
+                    embeds: [
+                        new EmbedBuilder()
+                            .setColor(ee.wrongcolor)
+                            .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })
+                            .setTitle(`❌ ERROR | An error occurred`)
+                            .setDescription(`\`\`\`${e.stack}\`\`\``)
+                    ]
+                }
                 );
             }
         }
 }
 
+/**
+ * 
+ * @param {*} profile 
+ * @param {Message} message 
+ */
 async function register(profile, message) {
     const canvas = Canvas.createCanvas(1726, 1024);
     const ctx = canvas.getContext('2d');
@@ -104,8 +115,8 @@ async function register(profile, message) {
             ctx.font = 'bold 70px Times New Roman';
             ctx.fillText(profile.tag, 185, 850);
 
-            const attachment = new MessageAttachment(canvas.toBuffer(), 'code.png');
-            return message.channel.send(attachment)
+            const attachment = new AttachmentBuilder(await canvas.encode('png'), { name: 'balance.png' });
+            return message.channel.send({ files: [attachment] })
         }
     }).catch(err => {
         console.log(err)

@@ -1,12 +1,13 @@
-const { MessageEmbed, Client, Message, GuildMember } = require("discord.js");
+const { EmbedBuilder, Client, Message, GuildMember } = require("discord.js");
 const ee = require("../../botconfig/embed.json");
 
+require('dotenv').config()
 const sql = require('mssql')
 const sqlConfig = {
-    user: 'sa',
-    password: 'defaultpassword123',
-    database: 'TheShackPH',
-    server: 'localhost',
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_DATABASE,
+    server: process.env.DATABASE_SERVER,
     pool: {
         max: 10,
         min: 0,
@@ -38,11 +39,11 @@ module.exports = {
         async (client, message, args, user, text, prefix) => {
             try {
                 let profile = message.mentions.members.first() || client.guilds.cache.get(message.guild.id).members.cache.get(args[0])
-                if (!profile) return message.channel.send({ embed: { color: ee.color, description: 'Missing user.' } })
+                if (!profile) return message.channel.send({ embeds: [{ color: ee.color, description: 'Missing user.' }] })
 
-                if (!args[1]) return message.channel.send({ embed: { color: ee.color, description: 'Please specify amount.' } })
+                if (!args[1]) return message.channel.send({ embeds: [{ color: ee.color, description: 'Please specify amount.' }] })
                 let shims = parseInt(args[1])
-                if (isNaN(shims)) return message.channel.send({ embed: { color: ee.color, description: 'I need whole number.' } })
+                if (isNaN(shims)) return message.channel.send({ embeds: [{ color: ee.color, description: 'I need whole number.' }] })
 
                 let result
                 await sql.connect(sqlConfig)
@@ -50,28 +51,32 @@ module.exports = {
                 if (result.recordset[0]) {
                     await sql.query`UPDATE Economy SET shims = ${result.recordset[0].shims - shims} WHERE userID = ${profile.id}`
                     result = await sql.query`SELECT * FROM Economy WHERE userID = ${profile.id}`
-                    return message.channel.send(new MessageEmbed()
-                        .setColor(ee.color)
-                        .setTitle('Shimmers! Shimmers! <a:Shimmers:729388357410619505>')
-                        .setDescription(`──────── ⋅⋆ ─ ⋆⋅ ────────\n\n**${message.author} is destroying ${addCommas(shims)}<a:Shimmers:729388357410619505> from ${profile} \n\n──────── ⋅⋆ ─ ⋆⋅ ────────**`)
-                        .setFooter(ee.footertext, message.guild.iconURL())
+                    return message.channel.send({
+                        embeds: [new EmbedBuilder()
+                            .setColor(ee.color)
+                            .setTitle('Shimmers! Shimmers! <a:Shimmers:729388357410619505>')
+                            .setDescription(`──────── ⋅⋆ ─ ⋆⋅ ────────\n\n**${message.author} is destroying ${addCommas(shims)}<a:Shimmers:729388357410619505> from ${profile} \n\n──────── ⋅⋆ ─ ⋆⋅ ────────**`)
+                            .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })]
+                    }
                     )
                 }
                 else {
                     await sql.query`INSERT INTO Economy(userID, shims, daily) VALUES(${profile.id}, ${-shims}, 0)`
                     result = await sql.query`SELECT * FROM Economy WHERE userID = ${profile.id}`
-                    return message.channel.send(new MessageEmbed()
-                        .setColor(ee.color)
-                        .setTitle('Shimmers! Shimmers! <a:Shimmers:729388357410619505>')
-                        .setDescription(`──────── ⋅⋆ ─ ⋆⋅ ────────\n\n**${message.author} is destroying ${addCommas(shims)}<a:Shimmers:729388357410619505> from ${profile} \n\n──────── ⋅⋆ ─ ⋆⋅ ────────**`)
-                        .setFooter(ee.footertext, message.guild.iconURL())
+                    return message.channel.send({
+                        embeds: [new EmbedBuilder()
+                            .setColor(ee.color)
+                            .setTitle('Shimmers! Shimmers! <a:Shimmers:729388357410619505>')
+                            .setDescription(`──────── ⋅⋆ ─ ⋆⋅ ────────\n\n**${message.author} is destroying ${addCommas(shims)}<a:Shimmers:729388357410619505> from ${profile} \n\n──────── ⋅⋆ ─ ⋆⋅ ────────**`)
+                            .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })]
+                    }
                     )
                 }
             } catch (e) {
                 console.log(String(e.stack).bgRed)
-                return message.channel.send(new MessageEmbed()
+                return message.channel.send(new EmbedBuilder()
                     .setColor(ee.wrongcolor)
-                    .setFooter(ee.footertext, message.guild.iconURL())
+                    .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })
                     .setTitle(`❌ ERROR | An error occurred`)
                     .setDescription(`\`\`\`${e.stack}\`\`\``)
                 );

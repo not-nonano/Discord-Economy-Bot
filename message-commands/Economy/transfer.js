@@ -1,12 +1,13 @@
-const { MessageEmbed, Client, Message, GuildMember } = require("discord.js");
+const { EmbedBuilder, Client, Message, GuildMember } = require("discord.js");
 const ee = require("../../botconfig/embed.json");
 
+require('dotenv').config()
 const sql = require('mssql')
 const sqlConfig = {
-    user: 'sa',
-    password: 'defaultpassword123',
-    database: 'TheShackPH',
-    server: 'localhost',
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_DATABASE,
+    server: process.env.DATABASE_SERVER,
     pool: {
         max: 10,
         min: 0,
@@ -47,31 +48,39 @@ module.exports = {
 
 
                 if (!user1.recordset[0])
-                    return message.channel.send(new MessageEmbed()
-                        .setColor(ee.wrongcolor)
-                        .setFooter(ee.footertext, message.guild.iconURL())
-                        .setTitle(`❌ ERROR | ${client.users.cache.get(args[0].replace(/\D/g, '')).tag} doesn't have data.`)
+                    return message.channel.send({
+                        embeds: [new EmbedBuilder()
+                            .setColor(ee.wrongcolor)
+                            .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })
+                            .setTitle(`❌ ERROR | ${client.users.cache.get(args[0].replace(/\D/g, '')).tag} doesn't have data.`)]
+                    }
                     );
 
                 if (!parseInt(args[2]))
-                    return message.channel.send(new MessageEmbed()
-                        .setColor(ee.wrongcolor)
-                        .setFooter(ee.footertext, message.guild.iconURL())
-                        .setTitle(`❌ ERROR | Missing Amount`)
+                    return message.channel.send({
+                        embeds: [new EmbedBuilder()
+                            .setColor(ee.wrongcolor)
+                            .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })
+                            .setTitle(`❌ ERROR | Missing Amount`)]
+                    }
                     );
 
                 if (isNaN(args[2]))
-                    return message.channel.send(new MessageEmbed()
-                        .setColor(ee.wrongcolor)
-                        .setFooter(ee.footertext, message.guild.iconURL())
-                        .setTitle(`❌ ERROR | The Amount you give is not a Number`)
+                    return message.channel.send({
+                        embeds: [new EmbedBuilder()
+                            .setColor(ee.wrongcolor)
+                            .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })
+                            .setTitle(`❌ ERROR | The Amount you give is not a Number`)]
+                    }
                     );
 
                 if (user1.recordset[0].shims < parseInt(args[2]))
-                    return message.channel.send(new MessageEmbed()
-                        .setColor(ee.wrongcolor)
-                        .setFooter(ee.footertext, message.guild.iconURL())
-                        .setTitle(`❌ ERROR | Not Enough Shimmers from ${client.users.cache.get(args[0].replace(/\D/g, '')).tag}.`)
+                    return message.channel.send({
+                        embeds: [new EmbedBuilder()
+                            .setColor(ee.wrongcolor)
+                            .setFooter(ee.footertext, message.guild.iconURL())
+                            .setTitle(`❌ ERROR | Not Enough Shimmers from ${client.users.cache.get(args[0].replace(/\D/g, '')).tag}.`)]
+                    }
                     );
 
                 //to
@@ -79,29 +88,35 @@ module.exports = {
                 user2 = await sql.query`SELECT * FROM Economy WHERE userID = ${args[1].replace(/\D/g, '')}`
 
                 if (!user2.recordset[0])
-                    return message.channel.send(new MessageEmbed()
-                        .setColor(ee.wrongcolor)
-                        .setFooter(ee.footertext, message.guild.iconURL())
-                        .setTitle(`❌ ERROR | ${client.users.cache.get(args[1].replace(/\D/g, '')).tag} doesn't have data.`)
+                    return message.channel.send({
+                        embeds: [new EmbedBuilder()
+                            .setColor(ee.wrongcolor)
+                            .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })
+                            .setTitle(`❌ ERROR | ${client.users.cache.get(args[1].replace(/\D/g, '')).tag} doesn't have data.`)]
+                    }
                     );
 
                 await sql.connect(sqlConfig)
                 await sql.query`UPDATE Economy SET shims = ${user1.recordset[0].shims - parseInt(args[2])} WHERE userID = ${args[0].replace(/\D/g, '')}`
                 await sql.query`UPDATE Economy SET shims = ${user2.recordset[0].shims + parseInt(args[2])} WHERE userID = ${args[1].replace(/\D/g, '')}`
 
-                return message.channel.send(new MessageEmbed()
-                    .setColor(ee.color)
-                    .setFooter(ee.footertext, message.guild.iconURL())
-                    .setTitle(`Transfer Complete!`)
-                    .setDescription(`${client.users.cache.get(args[0].replace(/\D/g, ''))} -${addCommas(args[2])}<a:Shimmers:729388357410619505>\n${client.users.cache.get(args[1].replace(/\D/g, ''))} +${addCommas(args[2])}<a:Shimmers:729388357410619505>`)
-                );
+                return message.channel.send({
+                    embeds: [new EmbedBuilder()
+                        .setColor(ee.color)
+                        .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })
+                        .setTitle(`Transfer Complete!`)
+                        .setDescription(`${client.users.cache.get(args[0].replace(/\D/g, ''))} -${addCommas(args[2])}<a:Shimmers:729388357410619505>\n${client.users.cache.get(args[1].replace(/\D/g, ''))} +${addCommas(args[2])}<a:Shimmers:729388357410619505>`)
+                    ]
+                });
             } catch (e) {
                 console.log(String(e.stack).bgRed)
-                return message.channel.send(new MessageEmbed()
-                    .setColor(ee.wrongcolor)
-                    .setFooter(ee.footertext, message.guild.iconURL())
-                    .setTitle(`❌ ERROR | An error occurred`)
-                    .setDescription(`\`\`\`${e.stack}\`\`\``)
+                return message.channel.send({
+                    embeds: [new EmbedBuilder()
+                        .setColor(ee.wrongcolor)
+                        .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })
+                        .setTitle(`❌ ERROR | An error occurred`)
+                        .setDescription(`\`\`\`${e.stack}\`\`\``)]
+                }
                 );
             }
         }

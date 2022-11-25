@@ -7,7 +7,8 @@ const client = new Client(
       GatewayIntentBits.Guilds,
       GatewayIntentBits.GuildMessageReactions,
       GatewayIntentBits.GuildMessages,
-      GatewayIntentBits.GuildMembers
+      GatewayIntentBits.GuildMembers,
+      GatewayIntentBits.MessageContent
     ],
     partials: [
       Partials.Channel,
@@ -26,10 +27,12 @@ const client = new Client(
 
 client.commands = new Collection();
 client.messageCommands = new Collection();
+client.cooldowns = new Collection();
+client.aliases = new Collection();
 
 ["command", "event", "message-commands"].forEach(handler => {
   require(`./handlers/${handler}`)(client);
 });
 
 
-client.login(process.env.TEST_TOKEN);
+client.login(process.env.DISCORD_TOKEN);

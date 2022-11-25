@@ -1,16 +1,17 @@
-const { Message } = require('discord.js')
+const { Message, EmbedBuilder, Collection } = require('discord.js')
 
 let quizdrop = require('../../message-commands/Extra/quizdrop')
 let shimdrop = require('../../message-commands/Economy/shimdrop')
 let shimdrop2 = require('../../extras/shimdrop')
 const { escapeRegex } = require("../../handlers/functions"); 
 
+require('dotenv').config()
 const sql = require('mssql')
 const sqlConfig = {
-    user: 'sa',
-    password: 'defaultpassword123',
-    database: 'TheShackPH',
-    server: 'localhost',
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_DATABASE,
+    server: process.env.DATABASE_SERVER,
     pool: {
         max: 10,
         min: 0,
@@ -116,6 +117,7 @@ module.exports = {
                 }
             }
 
+            
             //get the current prefix from the botconfig/config.json
             let prefix = 'sm.'
             //the prefix can be a Mention of the Bot / The defined Prefix of the Bot
@@ -131,7 +133,7 @@ module.exports = {
             //if no cmd added return error
             if (cmd.length === 0) {
                 if (matchedPrefix.includes(client.user.id))
-                    return message.channel.send(new Discord.MessageEmbed()
+                    return message.channel.send(new EmbedBuilder()
                         .setColor(ee.color)
                         .setFooter(ee.footertext, ee.footericon)
                         .setTitle(`Hugh? I got pinged? Imma give you some help`)
@@ -140,13 +142,13 @@ module.exports = {
                 return;
             }
             //get the command from the collection
-            let command = client.commands.get(cmd);
+            let command = client.messageCommands.get(cmd);
             //if the command does not exist, try to get it by his alias
-            if (!command) command = client.commands.get(client.aliases.get(cmd));
+            if (!command) command = client.messageCommands.get(client.aliases.get(cmd));
             //if the command is now valid
             if (command) {
                 if (!client.cooldowns.has(command.name)) { //if its not in the cooldown, set it too there
-                    client.cooldowns.set(command.name, new Discord.Collection());
+                    client.cooldowns.set(command.name, new Collection());
                 }
                 const now = Date.now(); //get the current time
                 const timestamps = client.cooldowns.get(command.name); //get the timestamp of the last used commands
@@ -155,7 +157,7 @@ module.exports = {
                     const expirationTime = timestamps.get(message.author.id) + cooldownAmount; //get the amount of time he needs to wait until he can run the cmd again
                     if (now < expirationTime) { //if he is still on cooldonw
                         const timeLeft = (expirationTime - now) / 1000; //get the lefttime
-                        return message.channel.send(new Discord.MessageEmbed()
+                        return message.channel.send(new EmbedBuilder()
                             .setColor(ee.wrongcolor)
                             .setFooter(ee.footertext, ee.footericon)
                             .setTitle(`❌ Please wait ${timeLeft.toFixed(1)} more second(s) before reusing the \`${command.name}\` command.`)
@@ -174,7 +176,7 @@ module.exports = {
                         await sql.connect(sqlConfig)
                         result = await sql.query(`SELECT * FROM Channel WHERE channelID = '${message.channel.id}' AND moduleName = '${command.name}'`)
                         if (result.recordset[0]) {
-                            return message.channel.send(new Discord.MessageEmbed()
+                            return message.channel.send(new EmbedBuilder()
                                 .setColor(ee.wrongcolor)
                                 .setFooter(ee.footertext, ee.footericon)
                                 .setTitle("❌ Error | Module disabled")
@@ -193,7 +195,7 @@ module.exports = {
                             let arrayRoleID = []
                             result.recordset.forEach(value => { arrayRoleID.push(value.roleID) })
                             if (!message.member.roles.cache.some(r => arrayRoleID.includes(r.id)))
-                                return message.channel.send(new Discord.MessageEmbed()
+                                return message.channel.send(new EmbedBuilder()
                                     .setColor(ee.wrongcolor)
                                     .setFooter(ee.footertext, ee.footericon)
                                     .setTitle("❌ Error | You are not allowed to run this command!")
@@ -207,7 +209,7 @@ module.exports = {
                       "EMBED_LINKS", "CONNECT", "SPEAK", "DEAFEN_MEMBERS"]
                     if (!message.guild.me.hasPermission(required_perms)) {
                       try { message.react("❌"); } catch { }
-                      return message.channel.send(new Discord.MessageEmbed()
+                      return message.channel.send(new EmbedBuilder()
                         .setColor(ee.wrongcolor)
                         .setFooter(ee.footertext, ee.footericon)
                         .setTitle("❌ Error | I don't have enough Permissions!")
@@ -219,7 +221,7 @@ module.exports = {
                     command.run(client, message, args, message.member, args.join(" "), prefix);
                 } catch (e) {
                     console.log(String(e.stack).red)
-                    return message.channel.send(new Discord.MessageEmbed()
+                    return message.channel.send(new EmbedBuilder()
                         .setColor(ee.wrongcolor)
                         .setFooter(ee.footertext, ee.footericon)
                         .setTitle("❌ Something went wrong while, running the: `" + command.name + "` command")

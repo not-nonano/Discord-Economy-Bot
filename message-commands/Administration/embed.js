@@ -1,4 +1,4 @@
-const { MessageEmbed, Client, Message, GuildMember } = require("discord.js");
+const { EmbedBuilder, Client, Message, GuildMember } = require("discord.js");
 const ee = require("../../botconfig/embed.json");
 module.exports = {
   name: "embed",
@@ -28,31 +28,37 @@ module.exports = {
         let userargs = title + desc
 
         if (!userargs)
-          return message.channel.send(new MessageEmbed()
-            .setColor(ee.color)
-            .setFooter(ee.footertext, ee.footericon)
-            .setTitle(`❌ ERROR | You didn't provided a Title, nor a Description`)
-            .setDescription("embed <mention channels> / <TITLE> ++ <DESCRIPTION>")
+          return message.channel.send({
+            embeds: [new EmbedBuilder()
+              .setColor(ee.color)
+              .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })
+              .setTitle(`❌ ERROR | You didn't provided a Title, nor a Description`)
+              .setDescription("embed <mention channels> / <TITLE> ++ <DESCRIPTION>")]
+          }
           )
 
         channel.forEach(function (res, index) {
           if (res == '') return
-          message.guild.channels.cache.get(res.replace(/\D/g, '')).send(new MessageEmbed()
-            .setColor(ee.color)
-            .setFooter(ee.footertext, message.guild.iconURL())
-            .setTitle(title ? title : "")
-            .setDescription(desc ? desc : "")
-            .setImage(message.attachments.first() ? message.attachments.first().url : null)
+          message.guild.channels.cache.get(res.replace(/\D/g, '')).send({
+            embeds: [new EmbedBuilder()
+              .setColor(ee.color)
+              .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })
+              .setTitle(title ? title : "")
+              .setDescription(desc ? desc : "")
+              .setImage(message.attachments.first() ? message.attachments.first().url : null)]
+          }
           )
         })
 
       } catch (e) {
         console.log(String(e.stack).bgRed)
-        return message.channel.send(new MessageEmbed()
-          .setColor(ee.wrongcolor)
-          .setFooter(ee.footertext, message.guild.iconURL())
-          .setTitle(`❌ ERROR | An error occurred`)
-          .setDescription(`\`\`\`${e.stack}\`\`\``)
+        return message.channel.send({
+          embeds: [new EmbedBuilder()
+            .setColor(ee.wrongcolor)
+            .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })
+            .setTitle(`❌ ERROR | An error occurred`)
+            .setDescription(`\`\`\`${e.stack}\`\`\``)]
+        }
         );
       }
     }

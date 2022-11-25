@@ -1,14 +1,15 @@
 const { MessageCollector, ReactionCollector, MessageAttachment, Client } = require('discord.js')
 const Canvas = require('@napi-rs/canvas')
-const sql = require('mssql')
 let shimdrop = require('../message-commands/Economy/shimdrop')
 let activeChecker = shimdrop.activeChecker
 
+require('dotenv').config()
+const sql = require('mssql')
 const sqlConfig = {
-    user: 'sa',
-    password: 'defaultpassword123',
-    database: 'TheShackPH',
-    server: 'localhost',
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_DATABASE,
+    server: process.env.DATABASE_SERVER,
     pool: {
         max: 10,
         min: 0,
@@ -19,7 +20,6 @@ const sqlConfig = {
         trustServerCertificate: true // change to true for local dev / self-signed certs
     }
 }
-
 module.exports = {
     pickRandomShimdrop(client, channelID, channelUpdate) {
         let mode = (Math.floor(Math.random() * (4 - 1 + 1)) + 1)

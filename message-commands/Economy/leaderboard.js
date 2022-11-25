@@ -1,12 +1,13 @@
 const { MessageEmbed, Client, Message, GuildMember } = require("discord.js");
 const ee = require("../../botconfig/embed.json");
 
+require('dotenv').config()
 const sql = require('mssql')
 const sqlConfig = {
-    user: 'sa',
-    password: 'defaultpassword123',
-    database: 'TheShackPH',
-    server: 'localhost',
+    user: process.env.DATABASE_USER,
+    password: process.env.DATABASE_PASSWORD,
+    database: process.env.DATABASE_DATABASE,
+    server: process.env.DATABASE_SERVER,
     pool: {
         max: 10,
         min: 0,
@@ -49,11 +50,13 @@ module.exports = {
                 })
             } catch (e) {
                 console.log(String(e.stack).bgRed)
-                return message.channel.send(new MessageEmbed()
-                    .setColor(ee.wrongcolor)
-                    .setFooter(ee.footertext, message.guild.iconURL())
-                    .setTitle(`❌ ERROR | An error occurred`)
-                    .setDescription(`\`\`\`${e.stack}\`\`\``)
+                return message.channel.send({
+                    embeds: [new EmbedBuilder()
+                        .setColor(ee.wrongcolor)
+                        .setFooter({ text: ee.footertext, iconURL: message.guild.iconURL() })
+                        .setTitle(`❌ ERROR | An error occurred`)
+                        .setDescription(`\`\`\`${e.stack}\`\`\``)]
+                }
                 );
             }
         }
@@ -77,7 +80,7 @@ async function showLeaderboard(arr, description, page, max, message, client) {
     })
 
     message.channel.send({
-        embed: {
+        embeds: [{
             color: (ee.color),
             footer: {
                 text: `No. ${arr.map(function (a) { return a.userID }).indexOf(message.author.id) + 1} ${client.users.cache.get(message.author.id).tag}`,
@@ -85,7 +88,7 @@ async function showLeaderboard(arr, description, page, max, message, client) {
             },
             title: `<a:uuYllwShk_Shimmer:727028870569525320> Shimmers | Leaderboards <a:uuYllwShk_Shimmer:727028870569525320>`,
             description: description
-        }
+        }]
     })
         .then(async msg => {
             await msg.reactions.removeAll()
@@ -110,7 +113,7 @@ async function showLeaderboard(arr, description, page, max, message, client) {
                         })
 
                         msg.edit({
-                            embed: {
+                            embeds: [{
                                 color: (ee.color),
                                 footer: {
                                     text: `No. ${arr.map(function (a) { return a.userID }).indexOf(message.author.id) + 1} ${client.users.cache.get(message.author.id).tag}`,
@@ -118,7 +121,7 @@ async function showLeaderboard(arr, description, page, max, message, client) {
                                 },
                                 title: `<a:uuYllwShk_Shimmer:727028870569525320> Shimmers | Leaderboards <a:uuYllwShk_Shimmer:727028870569525320>`,
                                 description: description
-                            }
+                            }]
                         }).then(async msg => {
                             loopUpdate(arr, description, page, max, msg, client, message.author.id)
                         })
@@ -132,7 +135,7 @@ async function showLeaderboard(arr, description, page, max, message, client) {
                         })
 
                         msg.edit({
-                            embed: {
+                            embeds: [{
                                 color: (ee.color),
                                 footer: {
                                     text: `No. ${arr.map(function (a) { return a.userID }).indexOf(message.author.id) + 1} ${client.users.cache.get(message.author.id).tag}`,
@@ -140,7 +143,7 @@ async function showLeaderboard(arr, description, page, max, message, client) {
                                 },
                                 title: `<a:uuYllwShk_Shimmer:727028870569525320> Shimmers | Leaderboards <a:uuYllwShk_Shimmer:727028870569525320>`,
                                 description: description
-                            }
+                            }]
                         }).then(async msg => {
                             loopUpdate(arr, description, page, max, msg, client, message.author.id)
                         })
@@ -188,7 +191,7 @@ async function loopUpdate(arr, description, page, max, msg, client, authorID) {
                 })
 
                 msg.edit({
-                    embed: {
+                    embeds: [{
                         color: (ee.color),
                         footer: {
                             text: `No. ${arr.map(function (a) { return a.userID }).indexOf(authorID) + 1} ${client.users.cache.get(authorID).tag}`,
@@ -196,7 +199,7 @@ async function loopUpdate(arr, description, page, max, msg, client, authorID) {
                         },
                         title: `<a:uuYllwShk_Shimmer:727028870569525320> Shimmers | Leaderboards <a:uuYllwShk_Shimmer:727028870569525320>`,
                         description: description
-                    }
+                    }]
                 }).then(async msg => {
                     loopUpdate(arr, description, page, max, msg, client, authorID)
                 })
@@ -210,7 +213,7 @@ async function loopUpdate(arr, description, page, max, msg, client, authorID) {
                 })
 
                 msg.edit({
-                    embed: {
+                    embeds: [{
                         color: (ee.color),
                         footer: {
                             text: `No. ${arr.map(function (a) { return a.userID }).indexOf(authorID) + 1} ${client.users.cache.get(authorID).tag}`,
@@ -218,7 +221,7 @@ async function loopUpdate(arr, description, page, max, msg, client, authorID) {
                         },
                         title: `<a:uuYllwShk_Shimmer:727028870569525320> Shimmers | Leaderboards <a:uuYllwShk_Shimmer:727028870569525320>`,
                         description: description
-                    }
+                    }]
                 }).then(async msg => {
                     loopUpdate(arr, description, page, max, msg, client, authorID)
                 })
