@@ -81,7 +81,7 @@ async function showLeaderboard(arr, description, page, max, message, client) {
 
     message.channel.send({
         embeds: [{
-            color: (ee.color),
+            color: ee.color,
             footer: {
                 text: `No. ${arr.map(function (a) { return a.userID }).indexOf(message.author.id) + 1} ${client.users.cache.get(message.author.id).tag}`,
                 icon_url: ee.footericon
@@ -114,7 +114,7 @@ async function showLeaderboard(arr, description, page, max, message, client) {
 
                         msg.edit({
                             embeds: [{
-                                color: (ee.color),
+                                color: ee.color,
                                 footer: {
                                     text: `No. ${arr.map(function (a) { return a.userID }).indexOf(message.author.id) + 1} ${client.users.cache.get(message.author.id).tag}`,
                                     icon_url: ee.footericon
@@ -136,7 +136,7 @@ async function showLeaderboard(arr, description, page, max, message, client) {
 
                         msg.edit({
                             embeds: [{
-                                color: (ee.color),
+                                color: ee.color,
                                 footer: {
                                     text: `No. ${arr.map(function (a) { return a.userID }).indexOf(message.author.id) + 1} ${client.users.cache.get(message.author.id).tag}`,
                                     icon_url: ee.footericon
@@ -192,7 +192,7 @@ async function loopUpdate(arr, description, page, max, msg, client, authorID) {
 
                 msg.edit({
                     embeds: [{
-                        color: (ee.color),
+                        color: ee.color,
                         footer: {
                             text: `No. ${arr.map(function (a) { return a.userID }).indexOf(authorID) + 1} ${client.users.cache.get(authorID).tag}`,
                             icon_url: ee.footericon
@@ -214,7 +214,7 @@ async function loopUpdate(arr, description, page, max, msg, client, authorID) {
 
                 msg.edit({
                     embeds: [{
-                        color: (ee.color),
+                        color: ee.color,
                         footer: {
                             text: `No. ${arr.map(function (a) { return a.userID }).indexOf(authorID) + 1} ${client.users.cache.get(authorID).tag}`,
                             icon_url: ee.footericon
