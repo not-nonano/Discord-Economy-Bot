@@ -1,4 +1,4 @@
-const { MessageEmbed, Client, Message, GuildMember } = require("discord.js");
+const { EmbedBuilder, Client, Message, GuildMember } = require("discord.js");
 const ee = require("../../botconfig/embed.json");
 
 require('dotenv').config()
