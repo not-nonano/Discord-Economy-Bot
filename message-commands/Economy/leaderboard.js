@@ -101,7 +101,7 @@ async function showLeaderboard(arr, description, page, max, message, client) {
                 return ['⬅', '➡'].includes(reaction.emoji.name) && user.id === message.author.id;
             };
 
-            msg.awaitReactions(filter, { max: 1, time: 10000, errors: ['time'] })
+            msg.awaitReactions(filter, { max: 1, time: 10_000, errors: ['time'] })
                 .then(async collected => {
                     description = ''
                     if (collected.first().emoji.name == '⬅') {
@@ -178,7 +178,7 @@ async function loopUpdate(arr, description, page, max, msg, client, authorID) {
         return ['⬅', '➡'].includes(reaction.emoji.name) && user.id === authorID;
     };
 
-    msg.awaitReactions(filter, { max: 1, time: 10000, errors: ['time'] })
+    msg.awaitReactions(filter, { max: 1, time: 10_000, errors: ['time'] })
         .then(async collected => {
             if (collected.first().emoji.name == '⬅') {
                 page -= 1
