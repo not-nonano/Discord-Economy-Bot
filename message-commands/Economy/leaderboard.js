@@ -73,6 +73,7 @@ module.exports = {
  * @param {Client} client
  */
 async function showLeaderboard(arr, description, page, max, message, client) {
+    const authorID = message.author.id
     arr.forEach(function (value, index) {
         if ((index >= ((max * page) - max)) && (index <= (max * page - 1))) {
             description += `**${index + 1}.** \`${(client.users.cache.get(value.userID)) ? client.users.cache.get(value.userID).tag : 'Deleted User'}\` ${addCommas(value.shims)} <a:uuYllwShk_Shimmer:727028870569525320>\n`
@@ -81,13 +82,13 @@ async function showLeaderboard(arr, description, page, max, message, client) {
 
     message.channel.send({
         embeds: [new EmbedBuilder()
-            .setColor(ee.color)
-            .setTitle(`<a:uuYllwShk_Shimmer:727028870569525320> Shimmers | Leaderboards <a:uuYllwShk_Shimmer:727028870569525320>`)
-            .setDescription(description)
-            .setFooter({
-                text: `No. ${arr.map(function (a) { return a.userID }).indexOf(authorID) + 1} ${client.users.cache.get(authorID).tag}`,
-                iconURL: ee.footericon
-            })]
+                        .setColor(ee.color)
+                        .setTitle(`<a:uuYllwShk_Shimmer:727028870569525320> Shimmers | Leaderboards <a:uuYllwShk_Shimmer:727028870569525320>`)
+                        .setDescription(description)
+                        .setFooter({
+                            text: `No. ${arr.map(function (a) { return a.userID }).indexOf(authorID) + 1} ${client.users.cache.get(authorID).tag}`,
+                            iconURL: ee.footericon
+                        })]
     })
         .then(async msg => {
             await msg.reactions.removeAll()
