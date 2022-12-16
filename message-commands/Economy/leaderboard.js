@@ -80,15 +80,14 @@ async function showLeaderboard(arr, description, page, max, message, client) {
     })
 
     message.channel.send({
-        embeds: [{
-            color: 0xFF90CAF9,
-            footer: {
-                text: `No. ${arr.map(function (a) { return a.userID }).indexOf(message.author.id) + 1} ${client.users.cache.get(message.author.id).tag}`,
-                icon_url: ee.footericon
-            },
-            title: `<a:uuYllwShk_Shimmer:727028870569525320> Shimmers | Leaderboards <a:uuYllwShk_Shimmer:727028870569525320>`,
-            description: description
-        }]
+        embeds: [new EmbedBuilder()
+            .setColor(ee.color)
+            .setTitle(`<a:uuYllwShk_Shimmer:727028870569525320> Shimmers | Leaderboards <a:uuYllwShk_Shimmer:727028870569525320>`)
+            .setDescription(description)
+            .setFooter({
+                text: `No. ${arr.map(function (a) { return a.userID }).indexOf(authorID) + 1} ${client.users.cache.get(authorID).tag}`,
+                iconURL: ee.footericon
+            })]
     })
         .then(async msg => {
             await msg.reactions.removeAll()
@@ -113,15 +112,14 @@ async function showLeaderboard(arr, description, page, max, message, client) {
                         })
 
                         msg.edit({
-                            embeds: [{
-                                color: 0xFF90CAF9,
-                                footer: {
-                                    text: `No. ${arr.map(function (a) { return a.userID }).indexOf(message.author.id) + 1} ${client.users.cache.get(message.author.id).tag}`,
-                                    icon_url: ee.footericon
-                                },
-                                title: `<a:uuYllwShk_Shimmer:727028870569525320> Shimmers | Leaderboards <a:uuYllwShk_Shimmer:727028870569525320>`,
-                                description: description
-                            }]
+                            embeds: [new EmbedBuilder()
+                                .setColor(ee.color)
+                                .setTitle(`<a:uuYllwShk_Shimmer:727028870569525320> Shimmers | Leaderboards <a:uuYllwShk_Shimmer:727028870569525320>`)
+                                .setDescription(description)
+                                .setFooter({
+                                    text: `No. ${arr.map(function (a) { return a.userID }).indexOf(authorID) + 1} ${client.users.cache.get(authorID).tag}`,
+                                    iconURL: ee.footericon
+                                })]
                         }).then(async msg => {
                             loopUpdate(arr, description, page, max, msg, client, message.author.id)
                         })
@@ -135,15 +133,14 @@ async function showLeaderboard(arr, description, page, max, message, client) {
                         })
 
                         msg.edit({
-                            embeds: [{
-                                color: 0xFF90CAF9,
-                                footer: {
-                                    text: `No. ${arr.map(function (a) { return a.userID }).indexOf(message.author.id) + 1} ${client.users.cache.get(message.author.id).tag}`,
-                                    icon_url: ee.footericon
-                                },
-                                title: `<a:uuYllwShk_Shimmer:727028870569525320> Shimmers | Leaderboards <a:uuYllwShk_Shimmer:727028870569525320>`,
-                                description: description
-                            }]
+                            embeds: [new EmbedBuilder()
+                                .setColor(ee.color)
+                                .setTitle(`<a:uuYllwShk_Shimmer:727028870569525320> Shimmers | Leaderboards <a:uuYllwShk_Shimmer:727028870569525320>`)
+                                .setDescription(description)
+                                .setFooter({
+                                    text: `No. ${arr.map(function (a) { return a.userID }).indexOf(authorID) + 1} ${client.users.cache.get(authorID).tag}`,
+                                    iconURL: ee.footericon
+                                })]
                         }).then(async msg => {
                             loopUpdate(arr, description, page, max, msg, client, message.author.id)
                         })
@@ -191,15 +188,14 @@ async function loopUpdate(arr, description, page, max, msg, client, authorID) {
                 })
 
                 msg.edit({
-                    embeds: [{
-                        color: 0xFF90CAF9,
-                        footer: {
+                    embeds: [new EmbedBuilder()
+                        .setColor(ee.color)
+                        .setTitle(`<a:uuYllwShk_Shimmer:727028870569525320> Shimmers | Leaderboards <a:uuYllwShk_Shimmer:727028870569525320>`)
+                        .setDescription(description)
+                        .setFooter({
                             text: `No. ${arr.map(function (a) { return a.userID }).indexOf(authorID) + 1} ${client.users.cache.get(authorID).tag}`,
-                            icon_url: ee.footericon
-                        },
-                        title: `<a:uuYllwShk_Shimmer:727028870569525320> Shimmers | Leaderboards <a:uuYllwShk_Shimmer:727028870569525320>`,
-                        description: description
-                    }]
+                            iconURL: ee.footericon
+                        })]
                 }).then(async msg => {
                     loopUpdate(arr, description, page, max, msg, client, authorID)
                 })
@@ -213,15 +209,14 @@ async function loopUpdate(arr, description, page, max, msg, client, authorID) {
                 })
 
                 msg.edit({
-                    embeds: [{
-                        color: 0xFF90CAF9,
-                        footer: {
+                    embeds: [new EmbedBuilder()
+                        .setColor(ee.color)
+                        .setTitle(`<a:uuYllwShk_Shimmer:727028870569525320> Shimmers | Leaderboards <a:uuYllwShk_Shimmer:727028870569525320>`)
+                        .setDescription(description)
+                        .setFooter({
                             text: `No. ${arr.map(function (a) { return a.userID }).indexOf(authorID) + 1} ${client.users.cache.get(authorID).tag}`,
-                            icon_url: ee.footericon
-                        },
-                        title: `<a:uuYllwShk_Shimmer:727028870569525320> Shimmers | Leaderboards <a:uuYllwShk_Shimmer:727028870569525320>`,
-                        description: description
-                    }]
+                            iconURL: ee.footericon
+                        })]
                 }).then(async msg => {
                     loopUpdate(arr, description, page, max, msg, client, authorID)
                 })
