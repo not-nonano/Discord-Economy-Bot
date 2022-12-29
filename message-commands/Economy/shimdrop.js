@@ -305,15 +305,12 @@ async function showChannel(arr, description, page, max, message, client) {
     })
 
     message.channel.send({
-        embed: {
-            color: (ee.color),
-            footer: {
-                text: ee.footertext,
-                icon_url: ee.footericon
-            },
-            title: `<a:uuYllwShk_Shimmer:727028870569525320> Shimmer Drop | Active Channel`,
-            description: description
-        }
+        embeds: [new EmbedBuilder()
+            .setColor(ee.color)
+            .setTitle('<a:uuYllwShk_Shimmer:727028870569525320> Shimmer Drop | Active Channel')
+            .setDescription(description)
+            .setFooter({ text: ee.footertext, iconURL: ee.footericon })
+        ]
     })
         .then(async msg => {
             await msg.reactions.removeAll()
@@ -342,15 +339,12 @@ async function showChannel(arr, description, page, max, message, client) {
                         })
 
                         msg.edit({
-                            embeds: [{
-                                color: (ee.color),
-                                footer: {
-                                    text: ee.footertext,
-                                    icon_url: ee.footericon
-                                },
-                                title: `<a:uuYllwShk_Shimmer:727028870569525320> Shimmer Drop | Active Channel`,
-                                description: description
-                            }]
+                            embeds: [new EmbedBuilder()
+                                .setColor(ee.color)
+                                .setTitle('<a:uuYllwShk_Shimmer:727028870569525320> Shimmer Drop | Active Channel')
+                                .setDescription(description)
+                                .setFooter({ text: ee.footertext, iconURL: ee.footericon })
+                            ]
                         }).then(async msg => {
                             loopUpdate(arr, description, page, max, msg, client, message.author.id)
                         })
@@ -368,15 +362,12 @@ async function showChannel(arr, description, page, max, message, client) {
                         })
 
                         msg.edit({
-                            embeds: [{
-                                color: (ee.color),
-                                footer: {
-                                    text: ee.footertext,
-                                    icon_url: ee.footericon
-                                },
-                                title: `<a:uuYllwShk_Shimmer:727028870569525320> Shimmer Drop | Active Channel`,
-                                description: description
-                            }]
+                            embeds: [new EmbedBuilder()
+                                .setColor(ee.color)
+                                .setTitle('<a:uuYllwShk_Shimmer:727028870569525320> Shimmer Drop | Active Channel')
+                                .setDescription(description)
+                                .setFooter({ text: ee.footertext, iconURL: ee.footericon })
+                            ]
                         }).then(async msg => {
                             loopUpdate(arr, description, page, max, msg, client, message.author.id)
                         })
@@ -428,15 +419,12 @@ async function loopUpdate(arr, description, page, max, msg, client, authorID) {
                 })
 
                 msg.edit({
-                    embeds: [{
-                        color: (ee.color),
-                        footer: {
-                            text: ee.footertext,
-                            icon_url: ee.footericon
-                        },
-                        title: `<a:uuYllwShk_Shimmer:727028870569525320> Shimmer Drop | Active Channel`,
-                        description: description
-                    }]
+                    embeds: [new EmbedBuilder()
+                        .setColor(ee.color)
+                        .setTitle('<a:uuYllwShk_Shimmer:727028870569525320> Shimmer Drop | Active Channel')
+                        .setDescription(description)
+                        .setFooter({ text: ee.footertext, iconURL: ee.footericon })
+                    ]
                 }).then(async msg => {
                     loopUpdate(arr, description, page, max, msg, client, authorID)
                 })
@@ -454,15 +442,12 @@ async function loopUpdate(arr, description, page, max, msg, client, authorID) {
                 })
 
                 msg.edit({
-                    embeds: [{
-                        color: (ee.color),
-                        footer: {
-                            text: ee.footertext,
-                            icon_url: ee.footericon
-                        },
-                        title: `<a:uuYllwShk_Shimmer:727028870569525320> Shimmer Drop | Active Channel`,
-                        description: description
-                    }]
+                    embeds: [new EmbedBuilder()
+                        .setColor(ee.color)
+                        .setTitle('<a:uuYllwShk_Shimmer:727028870569525320> Shimmer Drop | Active Channel')
+                        .setDescription(description)
+                        .setFooter({ text: ee.footertext, iconURL: ee.footericon })
+                    ]
                 }).then(async msg => {
                     loopUpdate(arr, description, page, max, msg, client, authorID)
                 })
