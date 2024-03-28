@@ -6,12 +6,12 @@ A Discord Bot for our server Engage your server members with a virtual economy s
 ## Cloning source code
 
 ```bash
-git clone https://github.com/not-nonano/Mercury14.git
+git clone https://github.com/not-nonano/Discord-Economy-Bot.git
 cd Mercury14
 ```
 
 ## Installing Dependencies
-This uses NodeJS v16^
+This uses NodeJS v16^ and to install dependencies enter this command to your terminal
 ```
 npm i 
 ```
